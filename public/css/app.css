@@ -1827,7 +1827,7 @@ table.dataTable{clear:both;margin-top:6px !important;margin-bottom:6px !importan
     padding: 0;
     width: 22px;
     height: 22px;
-    background: url(/images/vendor/admin-lte/plugins/iCheck/square/blue.png?96f8a9053c5b1ab49111b9e243fd5c38) no-repeat;
+    background: url(/images/vendor/_admin-lte@2.4.18@admin-lte/plugins/iCheck/square/blue.png?96f8a9053c5b1ab49111b9e243fd5c38) no-repeat;
     border: none;
     cursor: pointer;
 }
@@ -1873,7 +1873,7 @@ table.dataTable{clear:both;margin-top:6px !important;margin-bottom:6px !importan
        only screen and (min-device-pixel-ratio: 1.5) {
     .icheckbox_square-blue,
     .iradio_square-blue {
-        background-image: url(/images/vendor/admin-lte/plugins/iCheck/square/blue@2x.png?2694acfdd21dfca86aa67beac8e0a108);
+        background-image: url(/images/vendor/_admin-lte@2.4.18@admin-lte/plugins/iCheck/square/blue@2x.png?2694acfdd21dfca86aa67beac8e0a108);
         background-size: 240px 24px;
     }
 }

@@ -32,3 +32,6 @@ Route::get('mail/send','MailController@send');
 Route::get('icons', function () {
     return view('icons');
 });
+
+Route::get('excel/export','ExcelController@export');
+Route::get('excel/import','ExcelController@import');
