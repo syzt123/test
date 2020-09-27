@@ -6,6 +6,7 @@ use App\Exports\UserExport;
 use App\Http\Requests;
 
 use App\Imports\UsersImport;
+use App\Model\Examination;
 use Illuminate\Http\Request;
 
 use App\Http\Controllers\Controller;
@@ -15,17 +16,17 @@ class ExcelController extends Controller
 
 {
 
-    public function import(Request $request)
+    /*public function import(Request $request)
     {
-        new \Maatwebsite\Excel\Excel();
+        //new \Maatwebsite\Excel\Excel();
         //dd(storage_path('excel\\'.'试题模板.xls'));
         Excel::import(new UsersImport(), storage_path('excel\\'.'试题模板.xlsx'));
-        /*$filePath = storage_path('excel\\').iconv('UTF-8', 'GBK', '试题模板').'.xls';
+        $filePath = storage_path('excel\\').iconv('UTF-8', 'GBK', '试题模板').'.xls';
         Excel::load($filePath, function($reader) {
             $data = $reader->all();
             dd($data);
-        });*/
-    }
+        });
+    }*/
 
     /**
      * 导出
@@ -74,4 +75,54 @@ class ExcelController extends Controller
 
 }
 
+    /**
+     * 文件上传
+     * Created by PhpStorm.
+     * User: yezhangtao
+     * Date: 2020/9/25
+     * Time: 15:32
+     * @param void
+     * @param Request $request
+     */
+    public function import(Request $request)
+    {
+        //new \Maatwebsite\Excel\Excel();
+        //dd(storage_path('excel\\'.'试题模板.xls'));
+        //dd(11);
+
+        /*$back = $this->uploadXls();
+        if ($back['code'] != 200){
+            return $this->backjson($back['msg']);
+        }*/
+        $back['data']['path'] = storage_path('excel\\'.'试题模板.xlsx');
+        //dd($back);
+        //调用处理
+        $rs = Excel::import(new UsersImport(), $back['data']['path']);//storage_path('excel\\'.'试题模板.xlsx')
+        if ($rs){
+            return $this->backjson('批量导入成功', 200);
+        }
+        return $this->backjson('批量导入失败');
+        /*if ($rs == false){
+
+        }*/
+
+        /*$filePath = storage_path('excel\\').iconv('UTF-8', 'GBK', '试题模板').'.xls';
+        Excel::load($filePath, function($reader) {
+            $data = $reader->all();
+            dd($data);
+        });*/
+    }
+
+    /**
+     * 题列表
+     * Created by PhpStorm.
+     * User: yezhangtao
+     * Date: 2020/9/27
+     * Time: 10:00
+     * @param void
+     */
+    public function lists(){
+        $back = Examination::getRandomTenData(10);
+        return $this->backjson('ok', 1, ['lists'=>$back]);
+    }
 }

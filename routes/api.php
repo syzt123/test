@@ -16,3 +16,11 @@ use Illuminate\Http\Request;
 //Route::middleware('auth:api')->get('/user', function (Request $request) {
 //    return $request->user();
 //});
+
+/*Route::middleware([''])->group(function (){
+    Route::get('lists', 'ExcelController@lists')->name('api.excel.lists');
+});*/
+
+Route::middleware([])->group(function (){
+    Route::get('lists', 'ExcelController@lists')->name('api.excel.lists');
+});
