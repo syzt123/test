@@ -32,7 +32,7 @@ class Examination extends Model
         $time = date('Y-m-d H:i:s');
         $data = [
             'stem' => $params['stem'],
-            'option' => $params['stem'],
+            'option' => $params['option'],
             'answer' => $params['answer'],
             'type' => $params['type'],
             'created_at' => $time,
@@ -55,6 +55,9 @@ class Examination extends Model
         $query = new self();
         $data = $query->with([])->inRandomOrder()->limit($nums)->get();
         if ($data->count()>0){
+            foreach ($data as $k => &$v){
+                $v->option = explode(';', $v->option);
+            }
             return json_decode($data, true);
         }
         return [];

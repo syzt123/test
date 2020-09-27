@@ -20,7 +20,7 @@ class ExcelController extends Controller
     {
         //new \Maatwebsite\Excel\Excel();
         //dd(storage_path('excel\\'.'试题模板.xls'));
-        Excel::import(new UsersImport(), storage_path('excel\\'.'试题模板.xlsx'));
+        Excel::import(new UsersImport(), storage_path('excel\\'.'试题模板_BAK.xlsx'));
         $filePath = storage_path('excel\\').iconv('UTF-8', 'GBK', '试题模板').'.xls';
         Excel::load($filePath, function($reader) {
             $data = $reader->all();
@@ -97,7 +97,7 @@ class ExcelController extends Controller
         $back['data']['path'] = storage_path('excel\\'.'试题模板.xlsx');
         //dd($back);
         //调用处理
-        $rs = Excel::import(new UsersImport(), $back['data']['path']);//storage_path('excel\\'.'试题模板.xlsx')
+        $rs = Excel::import(new UsersImport(), $back['data']['path']);//storage_path('excel\\'.'试题模板_BAK.xlsx')
         if ($rs){
             return $this->backjson('批量导入成功', 200);
         }

@@ -38,10 +38,10 @@ class UsersImport implements ToModel
 
 
             $data = [
-                'stem' => $row[0],
-                'option' => $row[1],
-                'answer' => $row[2],
-                'type' => $row[3],
+                'stem' => $row[1],
+                'option' => $row[2],
+                'answer' => $row[3],
+                'type' => $row[4],
             ];
             //数据 处理 插入数据库
             ExaminationService::add($data);
