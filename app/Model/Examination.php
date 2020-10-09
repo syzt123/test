@@ -58,7 +58,9 @@ class Examination extends Model
             foreach ($data as $k => &$v){
                 $v->options = explode(';', $v->option);
                 $v->type = 'radio';
+                $v->content = $v->stem;
                 unset($v->option);
+                unset($v->stem);
                 if (is_array($v->options)){
                     $temp = [];
                     foreach ($v->options as $kk => $vv){
