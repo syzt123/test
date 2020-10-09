@@ -56,7 +56,20 @@ class Examination extends Model
         $data = $query->with([])->inRandomOrder()->limit($nums)->get();
         if ($data->count()>0){
             foreach ($data as $k => &$v){
-                $v->option = explode(';', $v->option);
+                $v->options = explode(';', $v->option);
+                unset($v->option);
+                if (is_array($v->options)){
+                    $temp = [];
+                    foreach ($v->options as $kk => $vv){
+                        $temp[] = [
+                            'a' => (explode('.', $vv))[0],
+                            'b' => (explode('.', $vv))[1],
+                        ];
+                            //= explode('.', $vv);
+                    }
+                    $v->options = ($temp);
+                }
+
             }
             return json_decode($data, true);
         }

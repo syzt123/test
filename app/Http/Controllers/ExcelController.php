@@ -123,6 +123,6 @@ class ExcelController extends Controller
      */
     public function lists(){
         $back = Examination::getRandomTenData(10);
-        return $this->backjson('ok', 1, ['lists'=>$back]);
+        return $this->backjson('ok', 1, ['details'=>$back]);
     }
 }
