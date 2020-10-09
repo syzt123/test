@@ -57,6 +57,7 @@ class Examination extends Model
         if ($data->count()>0){
             foreach ($data as $k => &$v){
                 $v->options = explode(';', $v->option);
+                $v->type = 'radio';
                 unset($v->option);
                 if (is_array($v->options)){
                     $temp = [];
