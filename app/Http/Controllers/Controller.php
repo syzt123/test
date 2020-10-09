@@ -58,7 +58,7 @@ class Controller extends BaseController
     }
 
     //返回json格式
-    public function backjson ($msg  , $code = 201 , $data = []) {
+    public function backjson ($msg  , $code = 0 , $data = []) {
         $arr = [
             'msg' => $msg,
             'code' => $code,

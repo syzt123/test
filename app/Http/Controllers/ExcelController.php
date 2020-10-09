@@ -5,11 +5,16 @@ namespace App\Http\Controllers;
 use App\Exports\UserExport;
 use App\Http\Requests;
 
+use App\Http\Services\ExaminationService;
+use App\Http\Services\RecordsService;
 use App\Imports\UsersImport;
 use App\Model\Examination;
+use App\Models\ExaminationRecord;
+use App\Models\UseExamination;
 use Illuminate\Http\Request;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 use \Maatwebsite\Excel\Facades\Excel;
 
 class ExcelController extends Controller
@@ -122,7 +127,165 @@ class ExcelController extends Controller
      * @param void
      */
     public function lists(){
-        $back = Examination::getRandomTenData(10);
-        return $this->backjson('ok', 1, ['details'=>$back]);
+        $back['details'] = Examination::getRandomTenData(10);
+
+        $back['id'] = 1;
+        $back['name'] = '一套题';
+        $back['examination_type'] = 1;
+        $back['status'] = 1;
+        $back['status_text'] = '正常';
+        $back['examination_type_text'] = '随机';
+        return $this->backjson('ok', 1, $back);
+    }
+
+    /**
+     * 提交试卷
+     * Created by PhpStorm.
+     * User: yezhangtao
+     * Date: 2020/10/9
+     * Time: 14:58
+     * @param mixed
+     * @param UseExamination $examination
+     * @return mixed
+     */
+    public function submit(Request $request)
+    {
+        $details = request()->input('details', []);
+        //dd(($details));
+        if (empty($details)) {
+            return $this->backjson('成绩参数不能为空', 0);
+        }
+        $examDetails = json_decode($details, true);
+        $userAnswers = [];
+        $totalScore = 0;
+        foreach ($examDetails['details'] as $key => $examDetail) {
+
+            $rs = ExaminationService::find($examDetail['id']);
+            if (!$rs){
+                return $this->backjson('题目不存在', 0);
+            }
+            //提交答案
+            $item = [
+                'id' => $examDetail['id'],
+                'content' => $rs->stem,
+                //'options' => $examDetail->options,
+                'answer' => $rs->answer,
+                'score' => 1,
+                'type' => 'radio',
+                'user_answer' => strtoupper($examDetail['answer']),
+                //'user_score' => $examDetail->answer ,
+            ];
+
+            if (strtoupper($examDetail['answer']) == strtoupper($rs->answer)) {
+                //对
+                $item['user_score'] = 1;
+            } else {
+                $item['user_score'] = 0;
+            }
+
+            //总成绩
+            $totalScore += $item['user_score'];
+
+            $options = explode(';', $rs->option);
+            $rs->options = explode(';', $rs->option);
+            $rs->type = 'radio';
+            $rs->content = $rs->stem;
+            unset($rs->option);
+            unset($rs->stem);
+            if (is_array($options)) {
+                $temp = [];
+                foreach ($options as $kk => $vv) {
+                    $temp[] = [
+                        'a' => (explode('.', $vv))[0],
+                        'b' => (explode('.', $vv))[1],
+                    ];
+                }
+                $rs->options = ($temp);
+            }
+            $item['options'] = $rs->options;
+            $userAnswers[] = $item;
+        }
+        $userAnswers['score'] = $totalScore;
+
+        try {
+            $id = 1;
+            $userAnswers['id'] = $id;
+            $time = date('Y-m-d H:i:s');
+            $data = [
+                'test_id' => $id,
+                'answers' => is_array($details) ? json_encode($details) : $details,
+                'score' => $totalScore,
+                'analysis' => json_encode($userAnswers),
+                'created_at' => $time,
+                'updated_at' => $time
+            ];
+            $rs = RecordsService::add($id, $data);
+            if ($rs){
+                $data['id'] = $id;
+                unset($data['test_id']);
+                unset($data['answers']);
+                unset($data['analysis']);
+                $data['examination_details'] = $userAnswers;
+                $data['id'] = $id;
+                return $this->backjson('ok', 1, $data);
+            }
+            return $this->backjson('提交试卷失败', 0);
+        } catch (\Exception $e) {
+            return $this->backjson('提交试卷失败2', 0);
+        }
+    }
+
+    /**
+     * 错题分析
+     * Created by PhpStorm.
+     * User: yezhangtao
+     * Date: 2020/10/9
+     * Time: 20:23
+     * @param void
+     * @param Request $request
+     */
+    public function recordAnalysis(Request $request){
+        $id = $request->get('id', 0);
+        if (!$id){
+            return $this->backjson('试卷id必须', 0);
+        }
+        //查询
+        $rs = RecordsService::find($id);
+
+        //错题
+        $error = json_decode($rs->analysis, true);
+        $error_arr = [];
+        foreach ($error as $v){
+            if ($v['user_score'] == 0){
+                $error_arr[] = $v;
+            }
+        }
+        $data =[
+            'id' => 1,
+            'examination_details' => $error_arr,
+            'score' => $rs->score,
+            'type' => 1,
+            'created_at' => $rs->created_at,
+            'updated_at' => $rs->updated_at,
+        ];
+        return $this->backjson('ok', 1, $data);
+    }
+
+    public function getScore(Request $request){
+        $id = $request->get('id', 0);
+        if (!$id){
+            $id = 1;
+        }
+        //查询
+        $rs = RecordsService::find($id);
+        $data =[
+            //'examination_details' => json_decode($rs->analysis, true),
+            'id' => 1,
+            'score' => $rs->score,
+            'type' => 2,
+            'created_at' => $rs->created_at,
+            'updated_at' => $rs->updated_at,
+        ];
+        return $this->backjson('ok', 1, $data);
     }
 }

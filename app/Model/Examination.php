@@ -78,4 +78,9 @@ class Examination extends Model
         }
         return [];
     }
+
+    public static function findRecord($id){
+        $query = new self();
+        return $query->with([])->where('id', $id)->first();
+    }
 }

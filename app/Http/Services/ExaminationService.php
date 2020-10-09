@@ -18,4 +18,8 @@ class ExaminationService
     {
         return Examination::addExamination($params);
     }
+
+    public static function find($params){
+        return Examination::findRecord($params);
+    }
 }
