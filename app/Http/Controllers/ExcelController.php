@@ -150,7 +150,7 @@ class ExcelController extends Controller
      */
     public function submit(Request $request)
     {
-        $details = request()->input('details', []);
+        $details = request()->input('details', '[]');
         //dd(($details));
         if (empty($details)) {
             return $this->backjson('成绩参数不能为空', 0);
