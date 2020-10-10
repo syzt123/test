@@ -156,6 +156,10 @@ class ExcelController extends Controller
             return $this->backjson('成绩参数不能为空', 0);
         }
         $examDetails = json_decode($details, true);
+        if (!(isset($examDetails['details']) && is_array($examDetails['details']))) {
+            return $this->backjson('格式错误', 0);
+        }
+
         $userAnswers = [];
         $totalScore = 0;
         foreach ($examDetails['details'] as $key => $examDetail) {
@@ -196,8 +200,8 @@ class ExcelController extends Controller
                 $temp = [];
                 foreach ($options as $kk => $vv) {
                     $temp[] = [
-                        'a' => (explode('.', $vv))[0],
-                        'b' => (explode('.', $vv))[1],
+                        'a' => trim((explode('.', $vv))[0]),
+                        'b' => trim((explode('.', $vv))[1]),
                     ];
                 }
                 $rs->options = ($temp);

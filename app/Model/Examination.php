@@ -65,8 +65,8 @@ class Examination extends Model
                     $temp = [];
                     foreach ($v->options as $kk => $vv){
                         $temp[] = [
-                            'a' => (explode('.', $vv))[0],
-                            'b' => (explode('.', $vv))[1],
+                            'a' => trim((explode('.', $vv))[0]),
+                            'b' => trim((explode('.', $vv))[1]),
                         ];
                             //= explode('.', $vv);
                     }
