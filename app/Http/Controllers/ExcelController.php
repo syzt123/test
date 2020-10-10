@@ -287,8 +287,8 @@ class ExcelController extends Controller
             'id' => 1,
             'score' => $rs->score,
             'type' => 2,
-            'created_at' => $rs->created_at,
-            'updated_at' => $rs->updated_at,
+            'created_at' => \Carbon\Carbon::parse($rs->created_at)->toDateTimeString(),
+            'updated_at' => \Carbon\Carbon::parse($rs->updated_at)->toDateTimeString(),
         ];
         return $this->backjson('ok', 1, $data);
     }
