@@ -258,6 +258,9 @@ class ExcelController extends Controller
 
         //错题
         $error = json_decode($rs->analysis, true);
+        unset($error['id']);
+        unset($error['score']);
+
         $error_arr = [];
         foreach ($error as $v){
             if ($v['user_score'] == 0){
