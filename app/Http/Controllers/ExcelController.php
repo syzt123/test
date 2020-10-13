@@ -267,6 +267,11 @@ class ExcelController extends Controller
                 $error_arr[] = $v;
             }
         }
+        foreach ($error_arr as $kk => &$vv){
+            //$error_arr[$kk][''] =
+            $vv['number'] = $vv['id'];
+            $vv['options'] = explode(';', trim((Examination::findRecord($vv['id']))->option) ?? '[]');
+        }
         $data =[
             'id' => 1,
             'examination_details' => $error_arr,
@@ -278,6 +283,15 @@ class ExcelController extends Controller
         return $this->backjson('ok', 1, $data);
     }
 
+    /**
+     * 获得分数
+     * Created by PhpStorm.
+     * User: yezhangtao
+     * Date: 2020/10/12
+     * Time: 18:13
+     * @param void
+     * @param Request $request
+     */
     public function getScore(Request $request){
         $id = $request->get('id', 0);
         if (!$id){
