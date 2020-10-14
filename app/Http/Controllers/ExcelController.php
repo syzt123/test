@@ -262,14 +262,13 @@ class ExcelController extends Controller
         unset($error['score']);
 
         $error_arr = [];
-        foreach ($error as $v){
+        foreach ($error as $k => $v){
             if ($v['user_score'] == 0){
+                $v['number'] = '单选题'.($k+1);
                 $error_arr[] = $v;
             }
         }
         foreach ($error_arr as $kk => &$vv){
-            //$error_arr[$kk][''] =
-            $vv['number'] = '单选题'.($kk+1);
             $vv['options'] = explode(';', trim((Examination::findRecord($vv['id']))->option) ?? '[]');
         }
         $data =[
