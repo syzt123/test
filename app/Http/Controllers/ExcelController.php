@@ -269,7 +269,11 @@ class ExcelController extends Controller
             }
         }
         foreach ($error_arr as $kk => &$vv){
-            $vv['options'] = explode(';', trim((Examination::findRecord($vv['id']))->option) ?? '[]');
+            $tt = trim((Examination::findRecord($vv['id']))->option);
+            $vv['options'] = explode(';', $tt) ?? '[]';
+            foreach ($vv['options'] as $kk => &$vv){
+                $vv = trim($vv);
+            }
         }
         $data =[
             'id' => 1,
